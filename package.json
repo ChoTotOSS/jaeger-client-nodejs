@@ -1,5 +1,5 @@
 {
-  "name": "jaeger-client-nodejs",
+  "name": "@ChoTotOSS/jaeger-client-nodejs",
   "version": "1.5.5",
   "description": "- Ref: `https://github.com/jaegertracing/jaeger-client-node`",
   "main": "index.js",
