@@ -5,8 +5,8 @@
 - Install:
   `npm install --save jaeger-client-nodejs`
 
-[![Node.js Package](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/npm-publish.yml)
-[![Node.js CI](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/node.js.yml/badge.svg)](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/node.js.yml)
+[![Node.js Package](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/npm-publish.yml/badge.svg?branch=master)](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/npm-publish.yml)
+[![Node.js CI](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/ChoTotOSS/jaeger-client-nodejs/actions/workflows/node.js.yml)
 
 ## How to use
 
