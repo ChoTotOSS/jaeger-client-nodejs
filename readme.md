@@ -67,7 +67,7 @@ export default initTracer(config, options);
 
 ```javascript
 const jaeger = require("path-to-lib/jaeger.js");
-const JaegerMiddleware = require("jaeger-client-nodejs");
+const JaegerMiddleware = require("@chototoss/jaeger-client-nodejs");
 const jaegerMiddleware = new JaegerMiddleware(jaeger);
 module.exports = jaegerMiddleware;
 ```
