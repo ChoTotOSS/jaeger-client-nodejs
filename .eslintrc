@@ -1,22 +1,22 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:@typescript-eslint/recommended"],
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true
+  },
+  "extends": ["standard", "prettier", "prettier/babel"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
   "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module"
+    "ecmaVersion": 2018
   },
   "rules": {
-    "quotes": ["error", "single"],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-inferrable-types": [
-      "warn", {
-        "ignoreParameters": true
-      }
-    ],
-    "@typescript-eslint/no-unused-vars": "warn",
+    "semi": "off",
     "indent": ["warn", 2],
-    "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "quotes": ["warn", "double"],
+    "no-console": "warn",
+    "space-before-function-paren": "off"
   }
 }
