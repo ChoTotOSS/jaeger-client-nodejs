@@ -59,7 +59,8 @@ const onStart = (event)=>{
 
 const onEnd = (event)=>{
     const {
-        requestId
+        requestId,
+        reply={}
     }= event;
     const {
         cursor={},
