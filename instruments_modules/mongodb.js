@@ -66,7 +66,7 @@ const onEnd = (event)=>{
         cursor={},
         value={}
     } = reply
-    const operation_name = requestIdMap[requestId]+`_${request_id}_response`
+    const operation_name = requestIdMap[requestId]+`_${requestId}_response`
     const span = opentracing.globalTracer().startSpan(operation_name,{
         childOf: context.getContext()
     })
