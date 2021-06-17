@@ -22,7 +22,7 @@ const onStart = (event)=>{
     const collection = command[commandName]
     const operation_name = `${databaseName}.${collection}.${commandName}_${requestId}_request`
     // set operation name
-    requestIdMapper[requestId]=`${databaseName}.${collection}.${commandName}`
+    requestIdMap[requestId]=`${databaseName}.${collection}.${commandName}`
     const span = opentracing.globalTracer().startSpan(operation_name,{
         childOf: context.getContext()
     })
