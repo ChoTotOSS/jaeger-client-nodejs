@@ -1,5 +1,8 @@
 "use strict";
 
+const sensitive_keys = ['password', 'passwd', 'pwd', 'secret', 'token',
+'card', 'authorization','pw', 'pass']
+
 const tagPrimitive = (span, key, value) => {
   span.setTag(key, value);
 };
@@ -7,6 +10,8 @@ const tagPrimitive = (span, key, value) => {
 const tagObject = (span, obj) => {
   for (let key in obj) {
     if (!obj[key]) continue;
+    // skip sensitive key
+    if (sensitive_keys.indexOf(key)>-1) continue;
     if (isArray(obj[key])) {
       tagArray(span, obj, key);
       continue;

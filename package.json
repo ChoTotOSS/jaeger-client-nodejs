@@ -1,10 +1,11 @@
 {
   "name": "@ChoTotOSS/jaeger-client-nodejs",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "- Ref: `https://github.com/jaegertracing/jaeger-client-node`",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "postinstall": "husky install"
   },
   "repository": {
     "type": "git",

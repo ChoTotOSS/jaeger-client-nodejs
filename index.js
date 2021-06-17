@@ -2,6 +2,7 @@ const { stringify } = require("flatted/cjs");
 const { FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP } = require("opentracing");
 const { tagObject, isExcludedPath } = require("./helper");
 const { getContext, setContext } = require("./context");
+const {registration} = require('./instruments')
 const opentracing = require("opentracing");
 
 let globalTracer = opentracing.globalTracer() || null;
@@ -73,6 +74,7 @@ class JaegerMiddleware {
     );
     this.spawnNewSpanWithData = this.spawnNewSpanWithData.bind(this)
     this.buildHeaderForHTTPRequest = this.buildHeaderForHTTPRequest.bind(this);
+    registration()
   }
 
   createSpanAfterReceivedRequest(req, res, next) {
@@ -143,11 +145,13 @@ class JaegerMiddleware {
 
   buildHeaderForHTTPRequest(path, headers = {}) {
     const spanContext = getContext();
+    this.spawnNewSpanWithData(path,{path})
     this._jaeger.inject(spanContext, FORMAT_HTTP_HEADERS, headers);
     return headers;
   }
 
   buildHeaderBeforePublishMessage(destination, headers = {}) {
+    this.spawnNewSpanWithData(destination,{destination})
     const spanContext = getContext();
     this._jaeger.inject(spanContext, FORMAT_TEXT_MAP, headers);
     return headers;
@@ -183,9 +187,7 @@ class JaegerMiddleware {
 
   jaegerLog(req, res) {
     try {
-      const span = this._jaeger.startSpan("jaeger-middleware", {
-        childOf: req.span
-      });
+      const span = req.span
       if (res.statusCode !== 200) {
         span.setTag("error", true);
       }
