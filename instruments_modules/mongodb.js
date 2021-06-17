@@ -14,10 +14,10 @@ const onStart = (event)=>{
         requestId
     }= event;
     const {
-        filter,
-        projection,
+        filter={},
+        projection={},
         limit,
-        query
+        query={}
     } = command
     const collection = command[commandName]
     const operation_name = `${databaseName}.${collection}.${commandName}_${requestId}_request`
