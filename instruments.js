@@ -20,7 +20,7 @@ const registration = ()=>{
 
 const signUpEvent = span =>{
     for (const module of modules) {
-        signUpEvent.on(module,(db_type,operation_name,data)=>{
+        emitter.on(module,(db_type,operation_name,data)=>{
             const child_span = global.tracer.startSpan(operation_name,{
                 childOf: span
             })
