@@ -12,7 +12,6 @@ const {
   PerformanceObserver,
   performance
 } = require('perf_hooks');
-const { EventEmitter } = require('stream');
 
 const obs = new PerformanceObserver((items) => {
   if (global.tracer){
