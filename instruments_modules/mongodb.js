@@ -20,28 +20,15 @@ const onStart = (event)=>{
         query={}
     } = command
     const collection = command[commandName]
-    const operation_name = `${databaseName}.${collection}.${commandName}_${requestId}_request`
+    const operation_name = `${databaseName}.${collection}.${commandName}`
     // set operation name
     requestIdMap[requestId]=`${databaseName}.${collection}.${commandName}`
-    const span = opentracing.globalTracer().startSpan(operation_name,{
-        childOf: context.getContext()
+    emitter.emit('mongodb','mongodb',operation_name,{
+        filter={},
+        projection={},
+        limit,
+        query={}
     })
-    span.setTag("action",commandName)
-    if (!helper.isEmptyObject(filter)){
-        helper.tagObject(span,filter)
-    }
-    if (!helper.isEmptyObject(query)){
-        helper.tagObject(span,query)
-    }
-    span.setTag("limit",limit)
-    span.log({
-        filter,
-        query,
-        projection,
-        limit
-    })
-
-    span.finish()
     // {
     //     address: '10.60.3.8:27017',
     //     connectionId: 2,
@@ -60,22 +47,23 @@ const onStart = (event)=>{
 const onEnd = (event)=>{
     const {
         requestId,
-        reply={}
+        reply={},
+        duration=0
     }= event;
     const {
         cursor={},
         value={}
     } = reply
-    const operation_name = requestIdMap[requestId]+`_${requestId}_response`
-    const span = opentracing.globalTracer().startSpan(operation_name,{
-        childOf: context.getContext()
-    })
+    const operation_name = requestIdMap[requestId]+`_response`
     const firstBatch = cursor?.firstBatch || []
-    span.log({
-        value: stringify(value),
-        firstBatch: stringify(firstBatch)
+    emitter.emit('mongodb','mongodb',operation_name,{
+        command_duration_ms: duration,
+        write_operation_response: value,
+        read_operation_response: firstBatch
     })
-    span.finish()
+    
+    delete requestIdMap[requestId]
+    
     // {
     //     address: '10.60.3.8:27017',
     //     connectionId: 2,

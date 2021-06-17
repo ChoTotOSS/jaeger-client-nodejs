@@ -54,6 +54,7 @@ const isExcludedPath = (method,requestPath, options) => {
 };
 
 const isEmptyObject = (input)=>{
+  if (!input) input = {}
   return Object.keys(input).length === 0 && input.constructor === Object
 }
 

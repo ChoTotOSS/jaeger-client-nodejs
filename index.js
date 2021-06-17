@@ -2,18 +2,21 @@ const { stringify } = require("flatted/cjs");
 const { FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP } = require("opentracing");
 const { tagObject, isExcludedPath } = require("./helper");
 const { getContext, setContext } = require("./context");
-const {registration} = require('./instruments')
-const opentracing = require("opentracing");
+const {registration,signUpEvent} = require('./instruments')
+const EventEmitter = require('events')
 
-let globalTracer = opentracing.globalTracer() || null;
+global.tracer=null;
+global.emitter = new EventEmitter()
 
 const {
   PerformanceObserver,
   performance
-} = require('perf_hooks')
+} = require('perf_hooks');
+const { EventEmitter } = require('stream');
 
 const obs = new PerformanceObserver((items) => {
-  const span = globalTracer.startSpan("performance_hooks")
+  if (global.tracer){
+    const span = globalTracer.startSpan("performance_hooks")
   span.setTag("operation_name",items.getEntries()[0].name)
   span.log({
     originTime: performance.timeOrigin,
@@ -23,6 +26,8 @@ const obs = new PerformanceObserver((items) => {
   span.finish()
  
   performance.clearMarks();
+  }
+  
 });
 obs.observe({
   entryTypes: ['measure']
@@ -60,7 +65,7 @@ const isEmpty = (obj = {}) => {
 
 class JaegerMiddleware {
   constructor(jaeger, options = {}) {
-    globalTracer = jaeger;
+    global.tracer = jaeger;
     this._jaeger = jaeger;
     this.options = options;
     this.handleLogBeforeResponse = this.handleLogBeforeResponse.bind(this);
@@ -83,14 +88,14 @@ class JaegerMiddleware {
     try {
       const parentSpan = this._jaeger.extract(FORMAT_HTTP_HEADERS, req.headers);
       // let spanName = buildSpanName(req);
-      const span = parentSpan
+      const span = parentSpan 
         ? this._jaeger.startSpan(`${req.originalUrl}`, {
-            // references: [opentracing.followsFrom(parentSpan)]
             childOf: parentSpan
           })
         : this._jaeger.startSpan(`${req.originalUrl}`);
       req.span = span;
-      setContext(span.context());
+      setContext(span);
+      signUpEvent(span)
     } catch (error) {
       console.log(error);
     } finally {
@@ -125,7 +130,7 @@ class JaegerMiddleware {
           childOf: parentSpan
         })
       : this._jaeger.startSpan(spanName);
-    const spanContext = span.context();
+    const spanContext = span;
     tagObject(span,data)
     setContext(spanContext);
     return span;
@@ -138,20 +143,22 @@ class JaegerMiddleware {
     }) : this._jaeger.startSpan(spanName)
     tagObject(newSpan,data)
     if (isEmpty(context)){
-      setContext(newSpan.context());
+      setContext(newSpan);
     }
     return newSpan;
   }
 
   buildHeaderForHTTPRequest(path, headers = {}) {
+    const span = this.spawnNewSpanWithData(path,{path})
+    span.finish()
     const spanContext = getContext();
-    this.spawnNewSpanWithData(path,{path})
     this._jaeger.inject(spanContext, FORMAT_HTTP_HEADERS, headers);
     return headers;
   }
 
   buildHeaderBeforePublishMessage(destination, headers = {}) {
-    this.spawnNewSpanWithData(destination,{destination})
+    const span = this.spawnNewSpanWithData(destination,{destination})
+    span.finish()
     const spanContext = getContext();
     this._jaeger.inject(spanContext, FORMAT_TEXT_MAP, headers);
     return headers;
