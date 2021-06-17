@@ -10,13 +10,14 @@
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
   },
   "rules": {
     "semi": "off",
     "indent": ["warn", 2],
-    "quotes": ["warn", "double"],
+    "quotes": ["warn", "single"],
     "no-console": "warn",
-    "space-before-function-paren": "off"
+    "space-before-function-paren": "off",
+    "camelcase":"off"
   }
 }

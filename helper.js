@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 const sensitive_keys = ['password', 'passwd', 'pwd', 'secret', 'token',
-'card', 'authorization','pw', 'pass']
+  'card', 'authorization','pw', 'pass']
 
 const tagPrimitive = (span, key, value) => {
   span.setTag(key, value);
@@ -45,7 +45,7 @@ const isArray = input => {
 
 const isExcludedPath = (method,requestPath, options) => {
   const { excludedPath = [] } = options;
-  if (requestPath.includes("health") || requestPath.includes("public")) return true;
+  if (requestPath.includes('health') || requestPath.includes('public')) return true;
   for (let index = 0; index < excludedPath.length; index++) {
     const path = excludedPath[index];
     if(requestPath.includes(path.url) && path.method.toLowerCase()===method.toLowerCase()) return true;

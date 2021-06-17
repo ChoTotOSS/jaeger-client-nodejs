@@ -1,4 +1,4 @@
-const asyncHooks = require("async_hooks");
+const asyncHooks = require('async_hooks');
 const contexts = {};
 asyncHooks
   .createHook({

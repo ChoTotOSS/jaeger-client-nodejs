@@ -1,7 +1,7 @@
-const { stringify } = require("flatted/cjs");
-const { FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP } = require("opentracing");
-const { tagObject, isExcludedPath } = require("./helper");
-const { getContext, setContext } = require("./context");
+const { stringify } = require('flatted/cjs');
+const { FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP } = require('opentracing');
+const { tagObject, isExcludedPath } = require('./helper');
+const { getContext, setContext } = require('./context');
 const {registration,signUpEvent} = require('./instruments')
 
 const buildSpanName = req => {
@@ -20,10 +20,10 @@ const buildSpanName = req => {
   return baseSpanName;
 };
 
-process.on("unhandledRejection", error => {
-  const errorSpan = globalTracer.startSpan("unhandledRejection");
-  errorSpan.setTag("error", true);
-  errorSpan.setTag("http.status_code", error.statusCode || 500);
+process.on('unhandledRejection', error => {
+  const errorSpan = global.tracer.startSpan('unhandledRejection');
+  errorSpan.setTag('error', true);
+  errorSpan.setTag('http.status_code', error.statusCode || 500);
   errorSpan.log({
     error: JSON.stringify(error)
   });
@@ -61,8 +61,8 @@ class JaegerMiddleware {
       // let spanName = buildSpanName(req);
       const span = parentSpan 
         ? this._jaeger.startSpan(`${req.originalUrl}`, {
-            childOf: parentSpan
-          })
+          childOf: parentSpan
+        })
         : this._jaeger.startSpan(`${req.originalUrl}`);
       req.span = span;
       setContext(span);
@@ -98,8 +98,8 @@ class JaegerMiddleware {
     const parentSpan = this._jaeger.extract(FORMAT_TEXT_MAP, headers);
     const span = parentSpan
       ? this._jaeger.startSpan(spanName, {
-          childOf: parentSpan
-        })
+        childOf: parentSpan
+      })
       : this._jaeger.startSpan(spanName);
     const spanContext = span;
     tagObject(span,data)
@@ -107,7 +107,7 @@ class JaegerMiddleware {
     return span;
   }
 
-  spawnNewSpanWithData(spanName = "children-span",data={}) {
+  spawnNewSpanWithData(spanName = 'children-span',data={}) {
     const context = getContext()
     const newSpan = !isEmpty(context) ? this._jaeger.startSpan(spanName, {
       childOf: context
@@ -167,7 +167,7 @@ class JaegerMiddleware {
     try {
       const span = req.span
       if (res.statusCode !== 200) {
-        span.setTag("error", true);
+        span.setTag('error', true);
       }
       tagObject(span, req.query);
       tagObject(span, req.params);
@@ -182,7 +182,7 @@ class JaegerMiddleware {
       const info = {
         timestamp: Date.now(),
         request: JSON.stringify(requestInfo),
-        "response.body": stringify(res.resBody)
+        'response.body': stringify(res.resBody)
       };
       span.log(info);
     } catch (error) {
