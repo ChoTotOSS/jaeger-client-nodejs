@@ -3,34 +3,6 @@ const { FORMAT_HTTP_HEADERS, FORMAT_TEXT_MAP } = require("opentracing");
 const { tagObject, isExcludedPath } = require("./helper");
 const { getContext, setContext } = require("./context");
 const {registration,signUpEvent} = require('./instruments')
-const EventEmitter = require('events')
-
-global.tracer=null;
-global.emitter = new EventEmitter()
-
-const {
-  PerformanceObserver,
-  performance
-} = require('perf_hooks');
-
-const obs = new PerformanceObserver((items) => {
-  if (global.tracer){
-    const span = globalTracer.startSpan("performance_hooks")
-  span.setTag("operation_name",items.getEntries()[0].name)
-  span.log({
-    originTime: performance.timeOrigin,
-    data: items.getEntries()[0],
-    message: "origin time in MS, duration in MS"
-  })
-  span.finish()
- 
-  performance.clearMarks();
-  }
-  
-});
-obs.observe({
-  entryTypes: ['measure']
-});
 
 const buildSpanName = req => {
   const params = req.pathParams || req.params;
@@ -213,8 +185,6 @@ class JaegerMiddleware {
         "response.body": stringify(res.resBody)
       };
       span.log(info);
-
-      span.finish();
     } catch (error) {
       console.log(error);
     } finally {

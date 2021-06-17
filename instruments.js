@@ -1,6 +1,7 @@
 'use strict'
 const log4js = require('log4js')
 const helper = require('./helper')
+const emitter = require('./emitter')
 
 log4js.levels = process.env.LOG_LEVEL || 'info'
 const logger = log4js.getLogger('jaeger-client-nodejs-instruments')
@@ -20,7 +21,9 @@ const registration = ()=>{
 
 const signUpEvent = span =>{
     for (const module of modules) {
-        emitter.on(module,(db_type,operation_name,data)=>{
+        emitter.on(module,(...agrs)=>{
+            const eventData = agrs[0]
+            const {db_type,operation_name,data}=eventData
             const child_span = global.tracer.startSpan(operation_name,{
                 childOf: span
             })
